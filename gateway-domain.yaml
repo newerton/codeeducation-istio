@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: ingress-gateway-k3d
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: http2
+      hosts:
+      - "*.fullcycle"
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service-a
+spec:
+  hosts:
+  - "a.fullcycle"
+  gateways:
+  - ingress-gateway-k3d
+  http:
+    - route:
+      - destination:
+          host: nginx-service
+          subset: v1
+
+---
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service-b
+spec:
+  hosts:
+  - "b.fullcycle"
+  gateways:
+  - ingress-gateway-k3d
+  http:
+    - route:
+      - destination:
+          host: nginx-service
+          subset: v2

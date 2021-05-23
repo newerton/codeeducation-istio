@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: nginx-destination-rule
+spec:
+  host: nginx-service
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+  subsets:
+    - name: v1
+      labels:
+        version: A
+      trafficPolicy:
+        loadBalancer:
+          consistentHash:
+            httpHeaderName: "x-v1"
+    - name: v2
+      labels:
+        version: B
+      trafficPolicy:
+        loadBalancer:
+          consistentHash:
+            httpHeaderName: "x-v2"
